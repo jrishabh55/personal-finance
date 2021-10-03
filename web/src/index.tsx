@@ -1,9 +1,9 @@
+import App from 'App';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from 'reportWebVitals';
+import 'style.css';
 import 'utils/firebase';
-import './style.css';
 
 console.log('Calling')
 
