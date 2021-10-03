@@ -1,15 +1,16 @@
-import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { BrowserRouter } from "react-router-dom";
-import { Routes } from "Routes";
+import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { FC } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Routes } from 'Routes';
 
 const darkTheme = createTheme({
   palette: {
-    mode: "dark",
-  },
+    mode: 'dark'
+  }
 });
 
-function App() {
+const App: FC = () => {
   return (
     <>
       <ThemeProvider theme={darkTheme}>
@@ -20,6 +21,6 @@ function App() {
       </ThemeProvider>
     </>
   );
-}
+};
 
 export default App;

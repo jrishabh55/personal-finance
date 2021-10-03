@@ -1,11 +1,12 @@
+import 'style.css';
+import 'utils/firebase';
+
 import App from 'App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from 'reportWebVitals';
-import 'style.css';
-import 'utils/firebase';
 
-console.log('Calling')
+console.log('Calling');
 
 ReactDOM.render(
   <React.StrictMode>

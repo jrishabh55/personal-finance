@@ -1,4 +1,4 @@
-import { Auth, getAuth, User } from "@firebase/auth";
+import { Auth, getAuth, User } from '@firebase/auth';
 import {
   createContext,
   Dispatch,
@@ -8,23 +8,23 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
-} from "react";
-import { useHistory, useLocation } from "react-router";
+  useState
+} from 'react';
+import { useHistory, useLocation } from 'react-router';
 
+export type StateType = Dispatch<SetStateAction<Partial<AuthContextType>>>;
 interface AuthContextType {
   user?: User;
   auth: Auth;
 }
 
-const defaultState: AuthContextType = {} as any;
-export type StateType = Dispatch<SetStateAction<Partial<AuthContextType>>>;
+const defaultState: AuthContextType = {} as AuthContextType;
 const authContext = createContext<[AuthContextType, StateType]>([
   defaultState,
-  () => {},
+  (): void => console.info('Default function')
 ]);
 
-export const useAuthContext = () => useContext(authContext);
+export const useAuthContext = (): [AuthContextType, StateType] => useContext(authContext);
 
 export const AuthProvider: FC = ({ children }) => {
   const [state, setState] = useState<AuthContextType>({ auth: getAuth() });
@@ -38,21 +38,19 @@ export const AuthProvider: FC = ({ children }) => {
 
   useEffect(() => {
     const unSub = auth.current.onAuthStateChanged((user) => {
-      console.log('onAuthStateChanged')
+      console.log('onAuthStateChanged');
       if (user) {
-        setState(s => ({ ...s, user }));
-        if (location.pathname.toLowerCase() === "/login") {
-          history.push("/");
+        setState((s) => ({ ...s, user }));
+        if (location.pathname.toLowerCase() === '/login') {
+          history.push('/');
         }
-      } else if (location.pathname !== "/login") {
-        history.push("/login");
+      } else if (location.pathname !== '/login') {
+        history.push('/login');
       }
     });
 
     return () => unSub();
   }, [location.pathname, history]);
 
-  return (
-    <authContext.Provider value={stateValue}>{children}</authContext.Provider>
-  );
+  return <authContext.Provider value={stateValue}>{children}</authContext.Provider>;
 };
