@@ -1,13 +1,11 @@
-import { useAuthContext } from "contexts/AuthContext";
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import { styled } from "@mui/material/styles";
 
 const Input = styled("input")({
   display: "none",
 });
 export const Dashboard = () => {
-  const [auth] = useAuthContext();
   return (
     <Grid
       container
