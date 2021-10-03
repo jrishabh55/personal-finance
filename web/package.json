@@ -25,7 +25,10 @@
     "prepare": "cd .. && husky install web/.husky"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,scss,css,md}": ["eslint", "prettier --write"]
+    "*.{js,ts,tsx,scss,css,md}": [
+      "eslint",
+      "prettier --write"
+    ]
   },
   "husky": {
     "hooks": {
