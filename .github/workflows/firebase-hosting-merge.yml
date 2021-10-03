@@ -9,6 +9,8 @@ name: Deploy to Firebase Hosting on merge
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_CONFIG }}'
     steps:
       - uses: actions/checkout@v2
       - run: yarn
@@ -19,6 +21,5 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PERSONAL_FINANCE_RJ }}'
-          REACT_APP_FIREBASE_CONFIG: '${{ secrets.REACT_APP_FIREBASE_CONFIG }}'
           channelId: live
           projectId: personal-finance-rj
