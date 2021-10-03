@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm run build
+      - run: yarn
+        working-directory: web
+      - run: yarn build
         working-directory: web
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
