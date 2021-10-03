@@ -52,7 +52,7 @@ export const Dashboard: FC = () => {
           </Button>
         </label>
         {status === 'uploaded' && <Alert severity="success">File uploaded successfully!</Alert>}
-        {status !== 'failed' && <Alert severity="error">File uploaded successfully failed!</Alert>}
+        {status === 'failed' && <Alert severity="error">File uploaded successfully failed!</Alert>}
       </Box>
     </Grid>
   );
