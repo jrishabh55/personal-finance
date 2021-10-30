@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import { useAuthContext } from 'contexts/AuthContext';
+import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { ChangeEventHandler, FC, useState } from 'react';
 
@@ -22,9 +23,20 @@ export const Dashboard: FC = () => {
       const storageRef = ref(storage, `statements/${auth.user?.uid}/${Date.now()}-${file.name}`);
       // 'file' comes from the Blob or File API
       uploadBytes(storageRef, file)
-        .then(() => {
-          console.log('Uploaded a blob or file!');
-          setStatus('uploaded');
+        .then((fileRef) => {
+          console.log('File Uploaded');
+          const db = getFirestore();
+          const col = collection(db, `files`);
+          // const ref = doc(db, 'files', auth.user?.uid as string);
+          addDoc(col, {
+            name: fileRef.metadata.name,
+            path: fileRef.metadata.fullPath,
+            uid: auth.user?.uid as string,
+            parsed: false
+          }).finally(() => {
+            console.log('Doc created!');
+            setStatus('uploaded');
+          });
         })
         .catch((error) => {
           console.error(error);
