@@ -16,4 +16,17 @@ export type SumTypes = {
   withdrawal: number;
 };
 
+export interface AggregatedData {
+  updateSetup: (statement: StatementUpload) => void;
+  aggregatedSum: SumTypesWithCount;
+  monthlySum: Record<string, SumTypesWithCount>;
+  yearlySum: Record<string, SumTypesWithCount>;
+}
+
+export type AggregatedDataArgs = {
+  uid: string;
+  accountId: string;
+  aggregatedData: AggregatedData;
+};
+
 export type SumTypesWithCount = SumTypes & { count: number };
