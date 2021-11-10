@@ -35,12 +35,17 @@ export const parseFiles = functions.firestore
           const batch = db.batch();
           chunk.forEach((statement: StatementUpload) => {
             updateSetup(statement);
-            batch.set(db.collection('/statements').doc(), {
-              ...statement,
-              date: statement.date.toString(),
-              uid,
-              accountId: accountId,
-            });
+            batch.set(
+              db
+                .collection(`/users/${uid}/accounts/${accountId}/statements`)
+                .doc(),
+              {
+                ...statement,
+                date: statement.date.toString(),
+                uid,
+                accountId: accountId,
+              },
+            );
           });
           return batch;
         });

@@ -19,6 +19,8 @@ export const updateAggregatedData = async ({
 
   const proms = [];
   const collectionRef = db
+    .collection('users')
+    .doc(uid)
     .collection('accounts')
     .doc(accountId)
     .collection('aggregated-data');
