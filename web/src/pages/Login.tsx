@@ -2,16 +2,16 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { FC, useCallback, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 export const Login: FC = () => {
   const firebaseAuth = useRef(getAuth());
   const auth = firebaseAuth.current;
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     if (auth.currentUser) {
-      history.replace('/dashboard');
+      history('/dashboard');
     }
   }, [auth, history]);
 

@@ -10,11 +10,12 @@ import {
   useRef,
   useState
 } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 export type StateType = Dispatch<SetStateAction<Partial<AuthContextType>>>;
 interface AuthContextType {
   user?: User;
+  dbUser?: any;
   auth: Auth;
 }
 
@@ -29,7 +30,7 @@ export const useAuthContext = (): [AuthContextType, StateType] => useContext(aut
 export const AuthProvider: FC = ({ children }) => {
   const [state, setState] = useState<AuthContextType>({ auth: getAuth() });
   const auth = useRef(getAuth());
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const stateValue: [AuthContextType, StateType] = useMemo(
     () => [state, (state) => setState((s) => ({ ...s, state }))],
@@ -42,15 +43,15 @@ export const AuthProvider: FC = ({ children }) => {
       if (user) {
         setState((s) => ({ ...s, user }));
         if (location.pathname.toLowerCase() === '/login') {
-          history.push('/');
+          navigate('/');
         }
       } else if (location.pathname !== '/login') {
-        history.push('/login');
+        navigate('/login');
       }
     });
 
     return () => unSub();
-  }, [location.pathname, history]);
+  }, [location.pathname, navigate]);
 
   return <authContext.Provider value={stateValue}>{children}</authContext.Provider>;
 };
