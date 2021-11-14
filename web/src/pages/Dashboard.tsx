@@ -1,71 +1,66 @@
-import { Alert } from '@mui/material';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/system';
+import KPIRow from 'components/KPIRow';
 import { useAuthContext } from 'contexts/AuthContext';
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { ChangeEventHandler, FC, useState } from 'react';
+import numeral from 'numeral';
+import { FC, useEffect, useState } from 'react';
+import { KPI } from 'types/global';
+import getAggregatedKpis from 'utils/getAggregatedKpis';
 
 const Input = styled('input')({
   display: 'none'
 });
+
 export const Dashboard: FC = () => {
-  const [status, setStatus] = useState<'uploading' | 'uploaded' | 'failed'>();
+  const [kpis, setKpis] = useState<KPI[]>([]);
   const [auth] = useAuthContext();
 
-  const handleClick: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
-    setStatus('uploading');
-    if (target.files?.length) {
-      const file = target.files[0];
-      const storage = getStorage();
-      const storageRef = ref(storage, `statements/${auth.user?.uid}/${Date.now()}-${file.name}`);
-      // 'file' comes from the Blob or File API
-      uploadBytes(storageRef, file)
-        .then((fileRef) => {
-          console.log('File Uploaded');
-          const db = getFirestore();
-          const col = collection(db, `files`);
-          // const ref = doc(db, 'files', auth.user?.uid as string);
-          addDoc(col, {
-            name: fileRef.metadata.name,
-            path: fileRef.metadata.fullPath,
-            uid: auth.user?.uid as string,
-            parsed: false
-          }).finally(() => {
-            console.log('Doc created!');
-            setStatus('uploaded');
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          setStatus('failed');
-        });
-    }
-  };
+  useEffect(() => {
+    getAggregatedKpis({ uid: auth.user?.uid, accountId: 'uPXpnGOrD4k6UH3bYxYe' }).then((res) => {
+      const kpi = res.data();
+      console.log('Calling', kpi);
+      if (!kpi) {
+        return;
+      }
+
+      setKpis(
+        kpis.concat([
+          {
+            id: 'total-deposit',
+            value: numeral(kpi.totalDeposit).format('0.0a'),
+            title: 'Overall Deposit'
+          },
+          {
+            id: 'total-withdrawal',
+            value: numeral(kpi.totalWithdrawal).format('0.0a'),
+            title: 'Overall Expenditure'
+          }
+        ])
+      );
+    });
+  }, [auth.user]);
 
   return (
-    <Grid
-      container
-      classes={{ root: 'w-screen h-screen' }}
-      justifyContent="flex-end"
-      alignItems="flex-start">
-      <Box alignItems="flex-end" display="flex" flexDirection="column">
-        <label htmlFor="contained-button-file">
-          <Input
-            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-            id="contained-button-file"
-            type="file"
-            onChange={handleClick}
-          />
-          <Button variant="contained" component="span" disabled={!!status}>
-            {status === 'uploading' ? 'Uploading' : 'Upload'}
-          </Button>
-        </label>
-        {status === 'uploaded' && <Alert severity="success">File uploaded successfully!</Alert>}
-        {status === 'failed' && <Alert severity="error">File uploaded successfully failed!</Alert>}
-      </Box>
+    <Grid container justifyContent="flex-end" spacing={0}>
+      <Grid item xs="auto">
+        <KPIRow kpis={kpis} />
+      </Grid>
+
+      {/* <Grid item xs="auto">
+
+      </Grid> */}
+      <Grid item xs={12}>
+        <Grid container spacing={0}>
+          <Grid
+            item
+            xs={12}
+            justifyContent="flex-start"
+            alignItems="flex-start"
+            classes={{ root: 'border-white' }}>
+            <pre>{JSON.stringify(kpis, null, 2)}</pre>
+          </Grid>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };

@@ -7,6 +7,14 @@ import { Routes } from 'Routes';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark'
+  },
+  typography: {
+    subtitle1: {
+      lineHeight: 1
+    },
+    caption: {
+      lineHeight: 1
+    }
   }
 });
 
