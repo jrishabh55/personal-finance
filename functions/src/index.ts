@@ -25,7 +25,7 @@ export const parseFiles = functions.firestore
       },
     );
 
-    allBuffer
+    return allBuffer
       .then(async (result) => {
         const db = admin.firestore();
         log.info(`Got data of length ${result.length}`);
@@ -60,7 +60,7 @@ export const parseFiles = functions.firestore
           }
         }
 
-        updateAggregatedData({ uid, accountId, aggregatedData });
+        return updateAggregatedData({ uid, accountId, aggregatedData });
       })
       .catch(function (error) {
         log.error('finished with error');
@@ -68,6 +68,7 @@ export const parseFiles = functions.firestore
       })
       .finally(() => {
         log.info('finished');
+        admin.storage().bucket().file(path).delete();
         snapshot.ref.update({ ...snapshot.data(), parsed: true });
       });
   });
